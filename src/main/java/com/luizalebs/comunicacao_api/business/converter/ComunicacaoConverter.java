@@ -1,7 +1,7 @@
 package com.luizalebs.comunicacao_api.business.converter;
 
-import com.luizalebs.comunicacao_api.api.dto.ComunicacaoInDTO;
-import com.luizalebs.comunicacao_api.api.dto.ComunicacaoOutDTO;
+import com.luizalebs.comunicacao_api.business.dto.ComunicacaoInDTO;
+import com.luizalebs.comunicacao_api.business.dto.ComunicacaoOutDTO;
 import com.luizalebs.comunicacao_api.infraestructure.entities.ComunicacaoEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
