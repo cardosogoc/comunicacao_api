@@ -1,7 +1,7 @@
 package com.luizalebs.comunicacao_api.controller;
 
-import com.luizalebs.comunicacao_api.business.dto.ComunicacaoInDTO;
-import com.luizalebs.comunicacao_api.business.dto.ComunicacaoOutDTO;
+import com.luizalebs.comunicacao_api.business.dto.ComunicacaoCancelaRecord;
+import com.luizalebs.comunicacao_api.business.dto.ComunicacaoRecord;
 import com.luizalebs.comunicacao_api.business.service.ComunicacaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,8 +25,8 @@ public class ComunicacaoController {
     @ApiResponse(responseCode = "200", description = "Agendamento realizado com sucesso")
     @ApiResponse(responseCode = "400", description = "Dado(s) informado(s) de maneira incorreta")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
-    public ResponseEntity<ComunicacaoOutDTO> agendar(@RequestBody ComunicacaoInDTO dto)  {
-        return ResponseEntity.ok(service.agendarComunicacao(dto));
+    public ResponseEntity<ComunicacaoRecord> agendar(@RequestBody ComunicacaoRecord record)  {
+        return ResponseEntity.ok(service.agendarComunicacao(record));
     }
 
     @GetMapping()
@@ -35,7 +35,7 @@ public class ComunicacaoController {
     @ApiResponse(responseCode = "403", description = "Não encontrado")
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
     @ApiResponse(responseCode = "401", description = "Busca não Autorizada")
-    public ResponseEntity<ComunicacaoOutDTO> buscarStatus(@RequestParam String emailDestinatario) {
+    public ResponseEntity<ComunicacaoRecord> buscarStatus(@RequestParam String emailDestinatario) {
         return ResponseEntity.ok(service.buscarStatusComunicacao(emailDestinatario));
     }
 
@@ -45,7 +45,7 @@ public class ComunicacaoController {
     @ApiResponse(responseCode = "500", description = "Erro de servidor")
     @ApiResponse(responseCode = "403", description = "Status não encontrado")
     @ApiResponse(responseCode = "401", description = "Não Autorizado")
-    public ResponseEntity<ComunicacaoOutDTO> cancelarStatus(@RequestParam String emailDestinatario) {
+    public ResponseEntity<ComunicacaoCancelaRecord> cancelarStatus(@RequestParam String emailDestinatario) {
         return ResponseEntity.ok(service.alterarStatusComunicacao(emailDestinatario));
     }
 }

@@ -1,6 +1,6 @@
 package com.luizalebs.comunicacao_api.business.service;
 
-import com.luizalebs.comunicacao_api.business.dto.ComunicacaoOutDTO;
+import com.luizalebs.comunicacao_api.business.dto.ComunicacaoRecord;
 import com.luizalebs.comunicacao_api.infraestructure.client.EmailClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ public class EmailService {
 
     private final EmailClient client;
 
-    public void enviarEmail(@RequestBody ComunicacaoOutDTO dto){
-        client.enviarEmail(dto);
+    public void enviarEmail(@RequestBody ComunicacaoRecord record){
+        client.enviarEmail(record);
     }
 }
