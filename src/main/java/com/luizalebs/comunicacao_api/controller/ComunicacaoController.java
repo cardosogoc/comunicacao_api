@@ -19,11 +19,10 @@ public class ComunicacaoController {
     private final ComunicacaoService service;
 
     @PostMapping("/agendar")
-    @Operation(
-            summary = "Agenda",
-            description = "Dados de agendamento")
+    @Operation(summary = "Agenda", description = "Dados de agendamento")
     @ApiResponse(responseCode = "200", description = "Agendamento realizado com sucesso")
     @ApiResponse(responseCode = "400", description = "Dado(s) informado(s) de maneira incorreta")
+    @ApiResponse(responseCode = "409", description = "Já existe uma comunicação para o e-mail informado")
     @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     public ResponseEntity<ComunicacaoRecord> agendar(@RequestBody ComunicacaoRecord record)  {
         return ResponseEntity.ok(service.agendarComunicacao(record));

@@ -3,7 +3,6 @@ package com.luizalebs.comunicacao_api.infraestructure.client.config;
 import com.luizalebs.comunicacao_api.infraestructure.exceptions.BusinessException;
 import com.luizalebs.comunicacao_api.infraestructure.exceptions.ConflictException;
 import com.luizalebs.comunicacao_api.infraestructure.exceptions.ResourceNotFoundException;
-import com.luizalebs.comunicacao_api.infraestructure.exceptions.UnauthorizedException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 
@@ -20,10 +19,8 @@ public class FeignError implements ErrorDecoder {
         switch (response.status()){
             case 409:
                 return new ConflictException("Erro: " + mensagemErro);
-            case 403:
+            case 404:
                 return new ResourceNotFoundException("Erro: " + mensagemErro);
-            case 401:
-                return new UnauthorizedException("Erro: " + mensagemErro);
             case 400:
                 return new IllegalArgumentException("Erro: " + mensagemErro);
             default:
@@ -31,15 +28,15 @@ public class FeignError implements ErrorDecoder {
         }
     }
 
-    private String mensagemErro(Response response){
+    private String mensagemErro(Response response) {
         try {
-            if (Objects.isNull(response.body())){
+            if (Objects.isNull(response.body())) {
                 return "";
             }
-            String mensagemErro = new String(response.body().asInputStream().readAllBytes(), StandardCharsets.UTF_8);
+            return new String(response.body().asInputStream().readAllBytes(), StandardCharsets.UTF_8);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return "";
     }
 }
