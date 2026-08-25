@@ -25,3 +25,12 @@ A aplicação possui um **GlobalExceptionHandler**, utilizando `@RestControllerA
 ## Mapeamento de Objetos
 
 O conversor de objetos da aplicação foi substituído pelo **MapStruct**, realizando o mapeamento entre `Record` e `Entity` de forma automática, reduzindo código repetitivo e facilitando a manutenção da aplicação.
+
+## Integração com Notificação
+
+A aplicação foi integrada ao serviço de **notificação** utilizando **Feign Client**, permitindo a comunicação entre os serviços através de chamadas HTTP.
+
+A implementação dessa integração pode ser encontrada na seguinte feature:
+
+* **Feature:** `feature/integracao-comunicacao-api`
+
