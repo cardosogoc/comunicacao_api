@@ -1,53 +1,65 @@
 package com.luizalebs.comunicacao_api.business.service;
 
-import com.luizalebs.comunicacao_api.api.dto.ComunicacaoInDTO;
-import com.luizalebs.comunicacao_api.api.dto.ComunicacaoOutDTO;
-import com.luizalebs.comunicacao_api.business.converter.ComunicacaoConverter;
+import com.luizalebs.comunicacao_api.business.converter.ComunicacaoMapper;
+import com.luizalebs.comunicacao_api.business.dto.ComunicacaoCancelaRecord;
+import com.luizalebs.comunicacao_api.business.dto.ComunicacaoRecord;
 import com.luizalebs.comunicacao_api.infraestructure.entities.ComunicacaoEntity;
 import com.luizalebs.comunicacao_api.infraestructure.enums.StatusEnvioEnum;
+import com.luizalebs.comunicacao_api.infraestructure.exceptions.ConflictException;
+import com.luizalebs.comunicacao_api.infraestructure.exceptions.ResourceNotFoundException;
 import com.luizalebs.comunicacao_api.infraestructure.repositories.ComunicacaoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class ComunicacaoService {
 
     private final ComunicacaoRepository repository;
-    private final ComunicacaoConverter converter;
+    private final ComunicacaoMapper mapper;
 
-    public ComunicacaoService(ComunicacaoRepository repository, ComunicacaoConverter converter) {
-        this.repository = repository;
-        this.converter = converter;
-    }
 
-    public ComunicacaoOutDTO agendarComunicacao(ComunicacaoInDTO dto) {
-        if (Objects.isNull(dto)) {
-            throw new RuntimeException();
+    public ComunicacaoRecord agendarComunicacao(ComunicacaoRecord record) {
+
+        if (record.emailDestinatario() == null || record.emailDestinatario().isBlank()) {
+            throw new IllegalArgumentException("E-mail do destinatário é obrigatório");
         }
-        dto.setStatusEnvio(StatusEnvioEnum.PENDENTE);
-        ComunicacaoEntity entity = converter.paraEntity(dto);
-        repository.save(entity);
-        ComunicacaoOutDTO outDTO = converter.paraDTO(entity);
-        return outDTO;
+
+        if (repository.findByEmailDestinatario(record.emailDestinatario()) != null) {
+            throw new ConflictException("Já existe uma comunicação para o e-mail informado");
+        }
+
+        ComunicacaoRecord recordFinal = new ComunicacaoRecord(
+                LocalDateTime.now(), record.nomeDestinatario(), record.emailDestinatario(), record.telefoneDestinatario(),
+                record.mensagem(), record.modoDeEnvio(), StatusEnvioEnum.PENDENTE);
+
+        ComunicacaoEntity entity = mapper.paraComunicacaoEntity(recordFinal);
+
+        return mapper.paraComunicacaoRecord(repository.save(entity));
     }
 
-    public ComunicacaoOutDTO buscarStatusComunicacao(String emailDestinatario) {
+    public ComunicacaoRecord buscarStatusComunicacao(String emailDestinatario) {
         ComunicacaoEntity entity = repository.findByEmailDestinatario(emailDestinatario);
         if (Objects.isNull(entity)) {
-            throw new RuntimeException();
+            throw new ResourceNotFoundException( "Email não encontrado: " + emailDestinatario);
         }
-        return converter.paraDTO(entity);
+        return mapper.paraComunicacaoRecord(entity);
     }
 
-    public ComunicacaoOutDTO alterarStatusComunicacao(String emailDestinatario) {
+    public ComunicacaoCancelaRecord alterarStatusComunicacao(String emailDestinatario) {
         ComunicacaoEntity entity = repository.findByEmailDestinatario(emailDestinatario);
         if (Objects.isNull(entity)) {
-            throw new RuntimeException();
+            throw new ResourceNotFoundException(
+                    "Email não encontrado: " + emailDestinatario
+            );
         }
         entity.setStatusEnvio(StatusEnvioEnum.CANCELADO);
         repository.save(entity);
-        return (converter.paraDTO(entity));
+
+        return mapper.paraComunicacaoCancelaRecord(entity);
     }
 
 }
