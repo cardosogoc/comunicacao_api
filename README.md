@@ -1,6 +1,6 @@
 # Endpoints da Aplicação
 
-* **POST /agendar**: Agenda uma nova comunicação para um destinatário. O e-mail informado é validado e não pode existir outra comunicação cadastrada para o mesmo endereço. A data e hora do agendamento são geradas automaticamente pelo sistema.
+* **POST /agendar**: Agenda uma nova comunicação para um destinatário. O e-mail informado é obrigatório e validado, e não pode existir outra comunicação cadastrada para o mesmo endereço. A data e hora da comunicação são geradas automaticamente pelo sistema.
 
   **Body:**
 
@@ -26,11 +26,32 @@ A aplicação possui um **GlobalExceptionHandler**, utilizando `@RestControllerA
 
 O conversor de objetos da aplicação foi substituído pelo **MapStruct**, realizando o mapeamento entre `Record` e `Entity` de forma automática, reduzindo código repetitivo e facilitando a manutenção da aplicação.
 
-## Integração com Notificação
+## Envio de E-mails
 
-A aplicação foi integrada ao serviço de **notificação** utilizando **Feign Client**, permitindo a comunicação entre os serviços através de chamadas HTTP.
+A aplicação realiza o envio de e-mails diretamente através do **Spring Mail**, utilizando **Thymeleaf** para a criação dos templates das mensagens.
 
-A implementação dessa integração pode ser encontrada na seguinte feature:
+O sistema possui templates específicos para diferentes situações:
 
-* **Feature:** `feature/integracao-comunicacao-api`
+* **notificacao.html**: utilizado para o envio da comunicação inicial.
+* **notificacao-atraso.html**: utilizado para notificar o destinatário quando uma comunicação permanece pendente por mais de 48 horas.
+
+O envio das comunicações pendentes é verificado automaticamente através de um **Scheduled Task (Cron)**, responsável por identificar comunicações pendentes e realizar o envio da notificação de atraso.
+
+## Tecnologias e Recursos
+
+* Java 25
+* Spring Boot
+* Spring Data JPA
+* MySQL
+* Spring Mail
+* Thymeleaf
+* MapStruct
+* Lombok
+* Springdoc OpenAPI / Swagger
+* Docker
+* Scheduled Tasks
+
+## Integração com Outros Serviços
+
+A integração anterior com o microserviço de **notificação** foi removida. Atualmente, o `comunicacao_api` é responsável pelo próprio envio de e-mails, não dependendo de outro microserviço para realizar essa operação.
 
