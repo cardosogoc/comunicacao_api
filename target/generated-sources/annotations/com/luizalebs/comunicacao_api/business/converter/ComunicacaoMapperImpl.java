@@ -1,7 +1,7 @@
 package com.luizalebs.comunicacao_api.business.converter;
 
-import com.luizalebs.comunicacao_api.business.dto.ComunicacaoCancelaRecord;
-import com.luizalebs.comunicacao_api.business.dto.ComunicacaoRecord;
+import com.luizalebs.comunicacao_api.business.record.ComunicacaoCancelaRecord;
+import com.luizalebs.comunicacao_api.business.record.ComunicacaoRecord;
 import com.luizalebs.comunicacao_api.infraestructure.entities.ComunicacaoEntity;
 import com.luizalebs.comunicacao_api.infraestructure.enums.ModoEnvioEnum;
 import com.luizalebs.comunicacao_api.infraestructure.enums.StatusEnvioEnum;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-08-25T14:54:19-0300",
+    date = "2026-09-02T08:58:23-0300",
     comments = "version: 1.6.3, compiler: javac, environment: Java 25.0.4.1 (Oracle Corporation)"
 )
 @Component
