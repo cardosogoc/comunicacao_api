@@ -1,18 +1,22 @@
 package com.luizalebs.comunicacao_api.business.service;
 
 import com.luizalebs.comunicacao_api.business.converter.ComunicacaoMapper;
-import com.luizalebs.comunicacao_api.business.dto.ComunicacaoCancelaRecord;
-import com.luizalebs.comunicacao_api.business.dto.ComunicacaoRecord;
+import com.luizalebs.comunicacao_api.business.record.ComunicacaoCancelaRecord;
+import com.luizalebs.comunicacao_api.business.record.ComunicacaoRecord;
 import com.luizalebs.comunicacao_api.infraestructure.entities.ComunicacaoEntity;
 import com.luizalebs.comunicacao_api.infraestructure.enums.StatusEnvioEnum;
 import com.luizalebs.comunicacao_api.infraestructure.exceptions.ConflictException;
 import com.luizalebs.comunicacao_api.infraestructure.exceptions.ResourceNotFoundException;
 import com.luizalebs.comunicacao_api.infraestructure.repositories.ComunicacaoRepository;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +24,7 @@ public class ComunicacaoService {
 
     private final ComunicacaoRepository repository;
     private final ComunicacaoMapper mapper;
+    private final EmailService emailService;
 
 
     public ComunicacaoRecord agendarComunicacao(ComunicacaoRecord record) {
@@ -37,8 +42,10 @@ public class ComunicacaoService {
                 record.mensagem(), record.modoDeEnvio(), StatusEnvioEnum.PENDENTE);
 
         ComunicacaoEntity entity = mapper.paraComunicacaoEntity(recordFinal);
+        ComunicacaoRecord comunicacaoFinal = mapper.paraComunicacaoRecord(repository.save(entity));
 
-        return mapper.paraComunicacaoRecord(repository.save(entity));
+        emailService.enviaEmailComunica(comunicacaoFinal);
+        return comunicacaoFinal;
     }
 
     public ComunicacaoRecord buscarStatusComunicacao(String emailDestinatario) {
@@ -60,6 +67,29 @@ public class ComunicacaoService {
         repository.save(entity);
 
         return mapper.paraComunicacaoCancelaRecord(entity);
+    }
+
+    @Scheduled(fixedRate = 12, timeUnit = TimeUnit.HOURS)
+    public void notificarComunicacoesPendentes() {
+
+        LocalDateTime limite = LocalDateTime.now().minusHours(48);
+
+        List<ComunicacaoEntity> comunicacoes =
+                repository.findByStatusEnvioAndDataHoraEnvioBefore(
+                        StatusEnvioEnum.PENDENTE,
+                        limite
+                );
+
+        for (ComunicacaoEntity comunicacao : comunicacoes) {
+
+            ComunicacaoRecord record = mapper.paraComunicacaoRecord(comunicacao);
+
+            if (record.emailDestinatario() == null || record.emailDestinatario().isBlank()) {
+                continue;
+            }
+
+            emailService.enviaEmailAtraso(record);
+        }
     }
 
 }

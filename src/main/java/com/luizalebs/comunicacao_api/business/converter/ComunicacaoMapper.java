@@ -1,7 +1,7 @@
 package com.luizalebs.comunicacao_api.business.converter;
 
-import com.luizalebs.comunicacao_api.business.dto.ComunicacaoCancelaRecord;
-import com.luizalebs.comunicacao_api.business.dto.ComunicacaoRecord;
+import com.luizalebs.comunicacao_api.business.record.ComunicacaoCancelaRecord;
+import com.luizalebs.comunicacao_api.business.record.ComunicacaoRecord;
 import com.luizalebs.comunicacao_api.infraestructure.entities.ComunicacaoEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
