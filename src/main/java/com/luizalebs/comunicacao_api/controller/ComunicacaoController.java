@@ -1,7 +1,7 @@
 package com.luizalebs.comunicacao_api.controller;
 
-import com.luizalebs.comunicacao_api.business.dto.ComunicacaoCancelaRecord;
-import com.luizalebs.comunicacao_api.business.dto.ComunicacaoRecord;
+import com.luizalebs.comunicacao_api.business.record.ComunicacaoCancelaRecord;
+import com.luizalebs.comunicacao_api.business.record.ComunicacaoRecord;
 import com.luizalebs.comunicacao_api.business.service.ComunicacaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

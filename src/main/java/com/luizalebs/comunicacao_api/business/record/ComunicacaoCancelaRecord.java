@@ -1,4 +1,4 @@
-package com.luizalebs.comunicacao_api.business.dto;
+package com.luizalebs.comunicacao_api.business.record;
 
 import com.luizalebs.comunicacao_api.infraestructure.enums.StatusEnvioEnum;
 
